@@ -22,6 +22,10 @@ def weekdays_to_index(weekday):
         return 4
     if weekday == "Sa":
         return 5
+    # If there is now weekday, just dump it into Saturday,
+    # but log it. Most likely a date blocked by exam placeholders
+    print('Exam-placeholder in week {}'.format(current_date.isocalendar()[1]))
+    return 5
 
 
 PARSER = argparse.ArgumentParser(description='Rapla to csv converter')
@@ -47,6 +51,7 @@ while current_date <= end_date:
     # Put the wanted month and day into the url params
     params['month'] = current_date.month
     params['day'] = current_date.day
+    params['year'] = current_date.year
     
     r = requests.get(url, params=params)
 
@@ -85,9 +90,16 @@ while current_date <= end_date:
         # Rapla sends the instructor as "name,surname,".
         # To make this pretty, we switch both parts and remove
         # both commas
-        person = i.find('span', class_='person').text.split(',')
-        lesson.instructor = "{} {}".format(
-            person[1].strip(), person[0].strip())
+        person = i.find('span', class_='person')
+        
+        # If there is now person, it is an exam
+        if person:
+            person = person.text.split(',')
+            lesson.instructor = "{} {}".format(
+                person[1].strip(), person[0].strip())
+        else:
+            print('The week {} contains exams'.format(current_date.isocalendar()[1]))
+            person = "Klausur"
 
         # Start and Endtime
         timeobj = Time()
