@@ -25,7 +25,7 @@ def weekdays_to_index(weekday):
     # If there is now weekday, just dump it into Saturday,
     # but log it. Most likely a date blocked by exam placeholders
     print('Exam-placeholder in week {}'.format(current_date.isocalendar()[1]))
-    return 5
+    return -1
 
 
 PARSER = argparse.ArgumentParser(description='Rapla to csv converter')
@@ -114,8 +114,15 @@ while current_date <= end_date:
         # to lookup in the dates list mentioned above
         weekday = i.find('span', class_='tooltip').find_all(
             'div')[1].text.split(' ', maxsplit=1)[0].strip()
-        timeobj.date = dates[weekdays_to_index(weekday)]
-        lesson.date = timeobj
+        w = weekdays_to_index(weekday)
+        # Is the extracted Information a weekday?
+        if w > 0 and w <= 5:
+            timeobj.date = dates[w]
+            lesson.date = timeobj
+        else:
+            # If there is no information about when the event is,
+            # just drop the whole event
+            break
 
         # Room
         # Online: When the class is held online, that is reflected in the
