@@ -31,10 +31,12 @@ def weekdays_to_index(weekday):
 PARSER = argparse.ArgumentParser(description='Rapla to csv converter')
 PARSER.add_argument('link', metavar='Link', type=str,
                     help='Link where to fetch from')
-PARSER.add_argument('from_', metavar='From', type=str, nargs='?',
+PARSER.add_argument('from_', metavar='From', type=str,
                     help='Beginning date')
-PARSER.add_argument('to', metavar='To', type=str, nargs='?',
+PARSER.add_argument('to', metavar='To', type=str,
                     help='End date')
+PARSER.add_argument('-o', '--outputfile', metavar='file', type=str, nargs='?',
+                    help='Name of the output csv file')
 
 args = PARSER.parse_args()
 
@@ -142,7 +144,10 @@ while current_date <= end_date:
     # At the end of the main loop, increment the date by 7 days
     current_date += datetime.timedelta(7)
 
-with open('csvfile.csv', 'w') as csvfile:
+if args.outputfile == None:
+    args.outputfile = 'csvfile.csv'
+
+with open(args.outputfile, 'w') as csvfile:
     # Write a header so that the file can be undestood by humans
     csvfile.write(
         "Subject,Start Date,Start Time,End Date,End Time,Description,Location\n")
