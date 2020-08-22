@@ -118,7 +118,7 @@ while current_date <= end_date:
             'div')[1].text.split(' ', maxsplit=1)[0].strip()
         w = weekdays_to_index(weekday)
         # Is the extracted Information a weekday?
-        if w > 0 and w <= 5:
+        if w >= 0 and w <= 5:
             timeobj.date = dates[w]
             lesson.date = timeobj
         else:
