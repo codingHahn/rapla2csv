@@ -124,7 +124,26 @@ while current_date <= end_date:
         else:
             # If there is no information about when the event is,
             # just drop the whole event
-            break
+            print("Could not find weekday information. Special handling now")
+            tds = i.parent.find_all('td')
+            count = 1
+
+            # TODO: Cleanup
+            # When we are here, we haven't gotten any useful weekday information
+            # yet. Here we count, how many days passed before we encounter
+            # the current lesson. This should work
+            for t in tds:
+                if t['class'][0] == 'week_emptycell_black' or t['class'][0] == 'week_block':
+                    if t['class'][0] == 'week_block':
+                        if t == i:
+                            break
+                    count += 1
+
+            if count >= 0 and count <= 5:
+                timeobj.date = dates[count]
+                lesson.date = timeobj
+            else:
+                break
 
         # Room
         # Online: When the class is held online, that is reflected in the
