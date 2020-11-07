@@ -126,7 +126,7 @@ while current_date <= end_date:
             # just drop the whole event
             print("Could not find weekday information. Special handling now")
             tds = i.parent.find_all('td')
-            count = 1
+            count = 0
 
             # TODO: Cleanup
             # When we are here, we haven't gotten any useful weekday information
